@@ -1,0 +1,34 @@
+# sin-context-bridge — per-project config
+
+# Copy this file to `.sin/context-bridge.yaml` in your project root.
+# The bridge reads it on construction; absent keys fall back to defaults.
+
+# ── Sources ──────────────────────────────────────────────────────
+# Default: all known sources. The bridge skips any whose
+# `is_available()` returns False, so listing a missing dep is harmless.
+sources:
+  - sckg         # requires `sin-code-sckg` (pip install sin-context-bridge[sckg])
+  - sin_brain    # requires `sin-brain`     (pip install sin-context-bridge[brain])
+  - gitnexus     # requires the `gitnexus` CLI on PATH
+  - local        # always available
+
+# ── Per-source paths ─────────────────────────────────────────────
+# Override when the project puts its graph/db somewhere other than
+# the conventional location.
+sckg:
+  storage_path: .sin/knowledge.graph
+
+local:
+  db_path: .sin/context.db
+
+# ── Budget ───────────────────────────────────────────────────────
+# Default token budget applied when the caller doesn't specify one.
+# ~4 chars/token; 8000 tokens ≈ 32 KB of context text.
+defaults:
+  max_tokens: 8000
+  per_source_max: 5
+
+# ── Logging ──────────────────────────────────────────────────────
+# `info` shows per-source hit counts, `warning` also shows soft failures.
+logging:
+  level: info
